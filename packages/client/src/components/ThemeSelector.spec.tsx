@@ -116,9 +116,10 @@ describe('ThemeSelector scheme toggle', () => {
     expect(setTheme).toHaveBeenCalledWith('high-contrast-dark');
   });
 
-  /** Under `system` the contrast comes from `prefers-contrast`, so the stored
-   *  mode never names it and only the resolved value can carry it forward. */
-  it('keeps an OS-requested contrast when the stored mode is system', () => {
+  /** The stored mode never names contrast under `system`, so the component has
+   *  to carry forward whatever the resolved `highContrast` value says, not
+   *  recompute it from the mode string. */
+  it('keeps a resolved contrast choice when the stored mode is system', () => {
     const { setTheme } = renderTheme('system', true);
     fireEvent.click(screen.getByRole('button'));
     expect(setTheme).toHaveBeenCalledWith('high-contrast-dark');

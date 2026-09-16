@@ -343,30 +343,30 @@ function ThemeToggle() {
 
 - `'light'` - Force light mode
 - `'dark'` - Force dark mode
-- `'system'` - Follow system preference, for both colour scheme and contrast
+- `'system'` - Follow system preference for colour scheme only
 - `'high-contrast-light'` - Accessibility mode: black on white, WCAG AAA
 - `'high-contrast-dark'` - Accessibility mode: white on black, WCAG AAA
 
 High contrast applies the built-in `highContrastTheme` definition
 (`themes/highContrast.ts`), which outranks a deployment's custom theme, and adds
 a `high-contrast` class to `<html>` for the CSS-only variables the token layer
-cannot reach.
+cannot reach. It is explicit-choice only, selected via the contrast toggle (or
+by setting `initialTheme`/`theme` directly) — `system` never auto-engages it
+from `prefers-contrast` or `forced-colors`. That OS-level auto-detection was
+tried and removed: a false-positive contrast signal from an unrelated OS or
+browser accessibility setting silently repainted every brand color on a
+deployment with no indication of why, and no way for that user to opt back out
+short of finding this same toggle anyway.
 
-Three predicates, and they answer different questions:
+Two predicates, and they answer different questions:
 
 - `isDark(theme)` - which colour scheme to render. `high-contrast-dark` is dark.
 - `isHighContrast(theme)` - did the user _pick_ a contrast mode. This is what the
   theme toggle preserves when it flips the scheme, so `system` is never included.
-- `resolvesToHighContrast(theme)` - will the contrast palette actually apply.
-  True for the two explicit modes, and for `system` when the OS asks for more
-  contrast through any of `prefers-contrast: more`, `prefers-contrast: custom`
-  or `forced-colors: active`.
 
-Because `system` resolves contrast from the OS, a user who has switched on
-"Increase contrast" (macOS) or "Contrast themes" (Windows) gets the accessible
-palette without first finding this setting. Windows is why the list has three
-queries: a Contrast Theme surfaces as `forced-colors: active` with
-`prefers-contrast: custom`, never `more`.
+`resolvesToHighContrast(theme)` is kept as an alias of `isHighContrast(theme)`
+for existing call sites; both answer "will the contrast palette actually
+apply," which is now always the same as "did the user pick it."
 
 ## Migration Guide
 

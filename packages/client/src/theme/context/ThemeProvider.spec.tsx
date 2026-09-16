@@ -854,7 +854,7 @@ describe('ThemeProvider', () => {
     expect(document.documentElement.style.getPropertyValue('--surface-primary')).toBe('1 2 3');
   });
 
-  it('follows the OS contrast preference under the system mode', async () => {
+  it('ignores the OS contrast preference under the system mode', async () => {
     window.matchMedia = jest.fn((query: string) => matchMedia(query.includes('contrast')));
     render(
       <ThemeProvider initialTheme="system">
@@ -863,15 +863,14 @@ describe('ThemeProvider', () => {
     );
 
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('high-contrast');
+      expect(document.documentElement).toHaveClass('light');
     });
     const root = document.documentElement;
-    expect(root).toHaveClass('light');
-    expect(root.style.getPropertyValue('--surface-primary')).toBe(
-      highContrastLightTheme['rgb-surface-primary'],
-    );
-    expect(resolvesToHighContrast('system')).toBe(true);
-    /** The stored mode stays `system`; contrast is resolved, not chosen. */
+    /** A false-positive contrast signal from an unrelated OS/browser setting
+     *  used to silently repaint every brand color; contrast is explicit-choice
+     *  only now, so `system` never engages `highContrastTheme` on its own. */
+    expect(root).not.toHaveClass('high-contrast');
+    expect(resolvesToHighContrast('system')).toBe(false);
     expect(isHighContrast('system')).toBe(false);
     expect(localStorage.getItem('color-theme')).toBe('system');
   });
@@ -891,7 +890,7 @@ describe('ThemeProvider', () => {
     expect(resolvesToHighContrast('light')).toBe(false);
   });
 
-  it('reacts when the OS contrast preference changes under the system mode', async () => {
+  it('does not react to OS contrast preference changes under the system mode', async () => {
     const listeners: Array<() => void> = [];
     let prefersContrast = false;
     window.matchMedia = jest.fn((query: string) => {
@@ -914,23 +913,21 @@ describe('ThemeProvider', () => {
     );
     expect(document.documentElement).not.toHaveClass('high-contrast');
     expect(screen.getByTestId('high-contrast')).toHaveTextContent('false');
+    /** No listener is registered against the contrast queries anymore, so
+     *  there is nothing captured here to fire. */
+    expect(listeners).toHaveLength(0);
 
     prefersContrast = true;
     act(() => listeners.forEach((listener) => listener()));
 
-    await waitFor(() => {
-      expect(document.documentElement).toHaveClass('high-contrast');
-    });
-    expect(document.documentElement.dataset.theme).toBe('high-contrast');
-    /** The DOM alone is not enough: a consumer keying off the resolved contrast,
-     *  such as the Mermaid cache, only recomputes if the context value moves. */
-    expect(screen.getByTestId('high-contrast')).toHaveTextContent('true');
+    expect(document.documentElement).not.toHaveClass('high-contrast');
+    expect(screen.getByTestId('high-contrast')).toHaveTextContent('false');
   });
 
   /** Windows Contrast Themes reach the browser as `forced-colors: active` with
-   *  `prefers-contrast: custom`; `more` never matches, so resolving contrast
-   *  from `more` alone left the palette off on the platform the README names. */
-  it('treats a forced-colors palette as an OS contrast request', async () => {
+   *  `prefers-contrast: custom`. Both used to auto-engage high contrast under
+   *  `system`; now neither does — contrast is explicit-choice only. */
+  it('ignores a forced-colors palette under the system mode', async () => {
     window.matchMedia = jest.fn((query: string) => matchMedia(query === '(forced-colors: active)'));
     render(
       <ThemeProvider initialTheme="system">
@@ -939,20 +936,23 @@ describe('ThemeProvider', () => {
     );
 
     await waitFor(() => {
-      expect(document.documentElement).toHaveClass('high-contrast');
+      expect(document.documentElement).toHaveClass('light');
     });
-    expect(screen.getByTestId('high-contrast')).toHaveTextContent('true');
-    expect(resolvesToHighContrast('system')).toBe(true);
+    expect(document.documentElement).not.toHaveClass('high-contrast');
+    expect(screen.getByTestId('high-contrast')).toHaveTextContent('false');
+    expect(resolvesToHighContrast('system')).toBe(false);
   });
 
-  /** The same staleness for the scheme: with contrast already on, flipping the
-   *  OS colour scheme leaves `theme` at `system` and `setHighContrast` a no-op,
-   *  so nothing rerendered until the resolved mode was published too. */
+  /** Flipping the OS colour scheme under `system` leaves `theme` itself at
+   *  `system`, so the resolved mode has to be published separately for a
+   *  consumer to rerender on the change. */
   it('reacts when the OS colour scheme changes under the system mode', async () => {
     const listeners: Array<() => void> = [];
     let prefersDark = false;
     window.matchMedia = jest.fn((query: string) => {
       const isSchemeQuery = query.includes('color-scheme');
+      /** Contrast queries still report `true` here to prove they no longer
+       *  influence the resolved contrast at all. */
       return {
         ...matchMedia(isSchemeQuery ? prefersDark : true),
         addEventListener: (_event: string, listener: () => void) => {
@@ -970,7 +970,7 @@ describe('ThemeProvider', () => {
       </ThemeProvider>,
     );
     expect(screen.getByTestId('resolved-mode')).toHaveTextContent('light');
-    expect(screen.getByTestId('high-contrast')).toHaveTextContent('true');
+    expect(screen.getByTestId('high-contrast')).toHaveTextContent('false');
 
     prefersDark = true;
     act(() => listeners.forEach((listener) => listener()));
@@ -978,7 +978,8 @@ describe('ThemeProvider', () => {
     await waitFor(() => {
       expect(screen.getByTestId('resolved-mode')).toHaveTextContent('dark');
     });
-    expect(document.documentElement).toHaveClass('dark', 'high-contrast');
+    expect(document.documentElement).toHaveClass('dark');
+    expect(document.documentElement).not.toHaveClass('high-contrast');
   });
 
   /** The provider reads both media queries during render now, so it has to

@@ -3,11 +3,12 @@ import { IThemeRGB } from '../types';
 /**
  * High contrast accessibility themes.
  *
- * Selected through the appearance modes `high-contrast-light` and
- * `high-contrast-dark`, and by `system` when the OS reports
- * `prefers-contrast: more`. They resolve as a built-in `ThemeDefinition`
- * (`highContrastTheme`) that outranks a deployment's custom theme, because a
- * contrast choice is an accessibility need rather than a branding preference.
+ * Selected only through the explicit appearance modes `high-contrast-light`
+ * and `high-contrast-dark` — `system` never auto-engages these from an OS
+ * contrast signal (see `resolvesToHighContrast` in `ThemeProvider.tsx` for
+ * why). They resolve as a built-in `ThemeDefinition` (`highContrastTheme`)
+ * that outranks a deployment's custom theme once explicitly selected, because
+ * a contrast choice is an accessibility need rather than a branding preference.
  *
  * Both maps are complete rather than partial overrides: a token left to fall
  * back to `defaultTheme`/`darkTheme` would silently reintroduce a mid-grey the

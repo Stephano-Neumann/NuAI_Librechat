@@ -129,28 +129,15 @@ export const isHighContrast = (theme: string): boolean =>
   theme === 'high-contrast-light' || theme === 'high-contrast-dark';
 
 /**
- * The media queries that mean "the OS asked for more contrast". Windows Contrast
- * Themes are the reason there are three: the browser turns them into
- * `forced-colors: active` and reports `prefers-contrast: custom` for a palette
- * whose own ratio is neither clearly more nor less, so keying off
- * `prefers-contrast: more` alone misses the platform the README names.
+ * The resolved contrast for an appearance mode. Deliberately explicit-choice
+ * only: `system` never auto-engages high contrast from `prefers-contrast` or
+ * `forced-colors`, because those signals proved unreliable in practice (a
+ * false positive from an unrelated OS/browser accessibility flag silently
+ * repainted every button and link on a deployment with no way to tell why).
+ * A user who wants the accessible palette selects it explicitly via the
+ * contrast toggle, which still works via `isHighContrast`.
  */
-const CONTRAST_QUERIES = [
-  '(prefers-contrast: more)',
-  '(prefers-contrast: custom)',
-  '(forced-colors: active)',
-] as const;
-
-/**
- * `system` follows the OS for contrast the same way it already follows it for
- * the colour scheme, so a user who has switched on "Increase contrast" gets the
- * accessible palette without first discovering this setting.
- */
-const prefersMoreContrast = (): boolean => CONTRAST_QUERIES.some(matchesMedia);
-
-/** The resolved contrast for an appearance mode, explicit choice or OS request. */
-export const resolvesToHighContrast = (theme: string): boolean =>
-  isHighContrast(theme) || (theme === 'system' && prefersMoreContrast());
+export const resolvesToHighContrast = (theme: string): boolean => isHighContrast(theme);
 
 const isAppearanceMode = (value: string): value is AppearanceMode =>
   themeModes.includes(value as AppearanceMode);
@@ -652,18 +639,17 @@ export function ThemeProvider({
       return;
     }
 
-    /** `system` tracks both OS preferences it resolves against, when the host
-     *  provides matchMedia at all. */
+    /** `system` tracks the OS colour-scheme preference it resolves against,
+     *  when the host provides matchMedia at all. Contrast is explicit-choice
+     *  only (see `resolvesToHighContrast`), so there is nothing to listen for
+     *  on the contrast queries here. */
     if (typeof window.matchMedia !== 'function') {
       return;
     }
-    const queries = [
-      window.matchMedia('(prefers-color-scheme: dark)'),
-      ...CONTRAST_QUERIES.map((query) => window.matchMedia(query)),
-    ];
+    const query = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => applyThemeMode('system');
-    queries.forEach((query) => query.addEventListener('change', handleChange));
-    return () => queries.forEach((query) => query.removeEventListener('change', handleChange));
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
   }, [applyThemeMode, theme]);
 
   useEffect(

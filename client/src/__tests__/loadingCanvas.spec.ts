@@ -48,29 +48,29 @@ describe('loading canvas', () => {
     expect(canvasFor(stored, matching as string[])).toBe(expected);
   });
 
-  /** The mismatch this guards: `system` plus `prefers-contrast: more` resolves to
-   *  the pure-black palette, so the standard-dark canvas would flash behind it
-   *  for the whole application load. */
-  it('follows both OS preferences under system', () => {
-    expect(canvasFor('system', [DARK_SCHEME, MORE_CONTRAST])).toBe('#000000');
+  /** Contrast is explicit-choice only (see `resolvesToHighContrast` in
+   *  ThemeProvider.tsx): a contrast media query firing under `system` must not
+   *  move the canvas off the standard dark/light shade, the same way it no
+   *  longer moves the resolved theme. */
+  it('follows only the OS colour scheme under system, ignoring contrast queries', () => {
+    expect(canvasFor('system', [DARK_SCHEME, MORE_CONTRAST])).toBe('#0d0d0d');
     expect(canvasFor('system', [DARK_SCHEME])).toBe('#0d0d0d');
     expect(canvasFor('system', [MORE_CONTRAST])).toBe('#ffffff');
     expect(canvasFor('system', [])).toBe('#ffffff');
   });
 
-  /** A Windows Contrast Theme reports `forced-colors: active` with
-   *  `prefers-contrast: custom`, never `more`, so keying the canvas off `more`
-   *  alone flashes #0d0d0d on the platform the theme README names. */
-  it('treats a forced-colors palette as a contrast request', () => {
-    expect(canvasFor('system', [DARK_SCHEME, CUSTOM_CONTRAST, FORCED_COLORS])).toBe('#000000');
-    expect(canvasFor('system', [DARK_SCHEME, FORCED_COLORS])).toBe('#000000');
+  /** Same guarantee for the platform whose Contrast Theme reports
+   *  `forced-colors: active` with `prefers-contrast: custom`, never `more`. */
+  it('ignores a forced-colors palette under system', () => {
+    expect(canvasFor('system', [DARK_SCHEME, CUSTOM_CONTRAST, FORCED_COLORS])).toBe('#0d0d0d');
+    expect(canvasFor('system', [DARK_SCHEME, FORCED_COLORS])).toBe('#0d0d0d');
   });
 
   /** An unset or unrecognised value is what `getInitialTheme` resolves as
    *  `system`, so the canvas has to resolve it the same way. */
   it('treats an unset or unknown mode as system', () => {
     expect(canvasFor(null, [DARK_SCHEME])).toBe('#0d0d0d');
-    expect(canvasFor(null, [DARK_SCHEME, MORE_CONTRAST])).toBe('#000000');
-    expect(canvasFor('sepia', [DARK_SCHEME, MORE_CONTRAST])).toBe('#000000');
+    expect(canvasFor(null, [DARK_SCHEME, MORE_CONTRAST])).toBe('#0d0d0d');
+    expect(canvasFor('sepia', [DARK_SCHEME, MORE_CONTRAST])).toBe('#0d0d0d');
   });
 });

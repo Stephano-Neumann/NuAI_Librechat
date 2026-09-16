@@ -12,19 +12,19 @@ export const defaultTheme: IThemeRGB = {
   'rgb-text-tertiary': '89 89 89', // #595959 (gray-500)
   'rgb-text-muted': '105 110 121', // #696e79 (Click UI text.muted)
   'rgb-text-warning': '180 83 9', // #b45309 (amber-700)
-  'rgb-text-destructive': '220 38 38', // #dc2626 (red-600)
+  'rgb-text-destructive': '209 25 40', // #d11928 (NuAI red, darkened for AA text contrast)
   'rgb-shimmer-base': '33 33 33', // #212121 (gray-800), matching text-primary
   'rgb-shimmer-dip': '129 130 134', // #818286
 
-  // Link and accent colors
-  'rgb-link': '37 99 235', // #2563eb (blue-600)
-  'rgb-link-hover': '29 78 216', // #1d4ed8 (blue-700)
+  // Link and accent colors — NuAI brand blue (#0079C2), 4.66:1 on white
+  'rgb-link': '0 121 194', // #0079c2 (NuAI blue)
+  'rgb-link-hover': '0 97 155', // #00619b (NuAI blue, darkened for hover)
   'rgb-link-visited': '147 51 234', // #9333ea (purple-600)
-  'rgb-accent-primary': '18 110 107', // #126e6b
-  'rgb-accent-primary-hover': '10 79 83', // #0a4f53
+  'rgb-accent-primary': '0 121 194', // #0079c2 (NuAI blue)
+  'rgb-accent-primary-hover': '0 97 155', // #00619b (NuAI blue, darkened for hover)
 
   // Ring colors
-  'rgb-ring-primary': '89 89 89', // #595959 (gray-500)
+  'rgb-ring-primary': '0 121 194', // #0079c2 (NuAI blue), 4.66:1 non-text contrast
 
   // Header colors
   'rgb-header-primary': '255 255 255', // #fff (white)
@@ -48,10 +48,10 @@ export const defaultTheme: IThemeRGB = {
   'rgb-surface-tertiary-alt': '255 255 255', // #fff (white)
   'rgb-surface-dialog': '255 255 255', // #fff (white)
   'rgb-surface-overlay': '89 89 89', // #595959 (gray-500)
-  'rgb-surface-submit': '4 120 87', // #047857 (green-700)
-  'rgb-surface-submit-hover': '6 95 70', // #065f46 (green-800)
-  'rgb-surface-destructive': '185 28 28', // #b91c1c (red-700)
-  'rgb-surface-destructive-hover': '153 27 27', // #991b1b (red-800)
+  'rgb-surface-submit': '0 121 194', // #0079c2 (NuAI blue), 4.66:1 under white label
+  'rgb-surface-submit-hover': '0 97 155', // #00619b (NuAI blue, darkened for hover)
+  'rgb-surface-destructive': '209 25 40', // #d11928 (NuAI red, darkened for AA under white label)
+  'rgb-surface-destructive-hover': '178 21 34', // #b21522 (NuAI red, darkened further for hover)
   'rgb-surface-chat': '255 255 255', // #fff (white)
   'rgb-surface-code': '247 247 248', // #f7f7f8 (gray-50)
   'rgb-surface-inverted': '23 23 23', // #171717 (gray-850)
@@ -67,7 +67,7 @@ export const defaultTheme: IThemeRGB = {
   'rgb-border-medium-alt': '205 205 205', // #cdcdcd (gray-300)
   'rgb-border-heavy': '153 150 150', // #999696 (gray-400)
   'rgb-border-xheavy': '89 89 89', // #595959 (gray-500)
-  'rgb-border-destructive': '220 38 38', // #dc2626 (red-600)
+  'rgb-border-destructive': '237 28 46', // #ed1c2e (NuAI red), 4.45:1 non-text contrast
 
   // Status colors
   'rgb-status-success': '4 120 87', // #047857 (green-700)
@@ -82,10 +82,10 @@ export const defaultTheme: IThemeRGB = {
   'rgb-status-warning-subtle': '255 251 235', // #fffbeb (amber-50)
   'rgb-status-warning-border': '252 211 77', // #fcd34d (amber-300)
   'rgb-status-warning-strong': '199 82 9', // #c75209
-  'rgb-status-error': '185 28 28', // #b91c1c (red-700)
-  'rgb-status-error-subtle': '254 242 242', // #fef2f2 (red-50)
-  'rgb-status-error-border': '252 165 165', // #fca5a5 (red-300)
-  'rgb-status-error-strong': '224 47 31', // #e02f1f
+  'rgb-status-error': '209 25 40', // #d11928 (NuAI red, darkened for AA text contrast)
+  'rgb-status-error-subtle': '254 244 245', // #fef4f5 (NuAI red tint)
+  'rgb-status-error-border': '245 130 140', // #f5828c (NuAI red tint)
+  'rgb-status-error-strong': '209 25 40', // #d11928 (NuAI red, darkened for AA under white label)
   'rgb-status-neutral': '66 66 66', // #424242 (gray-600)
   'rgb-status-neutral-subtle': '236 236 236', // #ececec (gray-100)
   'rgb-status-neutral-border': '205 205 205', // #cdcdcd (gray-300)
@@ -96,7 +96,7 @@ export const defaultTheme: IThemeRGB = {
   'rgb-text-on-status': '255 255 255', // #fff (white)
 
   // Brand colors
-  'rgb-brand-purple': '126 34 206', // #7e22ce (purple-700)
+  'rgb-brand-purple': '0 121 194', // #0079c2 (NuAI blue, repurposed from purple-700)
 
   /** Code syntax highlighting, measured against the `surface-code` fill. */
   'rgb-syntax-text': '33 33 33', // #212121 (gray-800)

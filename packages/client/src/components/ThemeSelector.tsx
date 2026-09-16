@@ -46,10 +46,7 @@ const Theme = ({
   const localize = useLocalize();
 
   const nextScheme = isDark(theme) ? 'light' : 'dark';
-  /** The toggle flips the colour scheme without discarding a contrast choice.
-   *  Resolved contrast rather than `isHighContrast(theme)`: under `system` the
-   *  contrast comes from `prefers-contrast`, which the stored mode never names,
-   *  so keying off the mode alone would silently drop an OS-requested need. */
+  /** The toggle flips the colour scheme without discarding a contrast choice. */
   const nextTheme = highContrast ? `high-contrast-${nextScheme}` : nextScheme;
 
   useEffect(() => {

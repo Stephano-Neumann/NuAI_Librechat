@@ -105,21 +105,21 @@ describe('composer hover surface', () => {
 });
 
 describe('dark destructive text', () => {
-  it('uses red-400 without changing the status error token', () => {
+  it('uses the NuAI red tint without changing the status error token', () => {
     const appStyles = readFileSync(
       join(__dirname, '..', '..', '..', '..', 'client', 'src', 'style.css'),
       'utf8',
     );
 
-    expect(appStyles).toMatch(/--text-destructive:\s*var\(--red-400\);/);
-    expect(darkTheme['rgb-text-destructive']).toBe('248 113 113');
-    expect(darkTheme['rgb-status-error']).toBe('252 165 165');
+    expect(appStyles).toMatch(/--text-destructive:\s*var\(--nuai-red-tint\);/);
+    expect(darkTheme['rgb-text-destructive']).toBe('245 130 140');
+    expect(darkTheme['rgb-status-error']).toBe('245 130 140');
   });
 });
 
 describe('light brand text', () => {
-  it('uses the contrasting purple foreground in the default theme', () => {
-    expect(defaultTheme['rgb-brand-purple']).toBe('126 34 206');
+  it('uses the NuAI blue foreground in the default theme', () => {
+    expect(defaultTheme['rgb-brand-purple']).toBe('0 121 194');
   });
 });
 

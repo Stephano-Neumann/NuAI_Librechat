@@ -42,25 +42,13 @@
         backgroundColor = '#ffffff';
       } else {
         /* `system`, and anything unset or unrecognised, which ThemeProvider also
-         * resolves as `system`. The OS decides the scheme and the contrast, and
-         * a contrast request moves the dark canvas to pure black, so keying off
-         * the scheme alone would flash #0d0d0d behind the black palette.
-         * The three contrast queries mirror ThemeProvider's `CONTRAST_QUERIES`:
-         * a Windows Contrast Theme reports `forced-colors: active` with
-         * `prefers-contrast: custom`, never `more`. */
+         * resolves as `system`. The OS decides the scheme only — contrast is
+         * explicit-choice only (see `resolvesToHighContrast` in
+         * ThemeProvider.tsx), so this never guesses a contrast request from an
+         * OS/browser media query the way the dark/light branches above don't
+         * either. */
         const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const prefersMoreContrast = [
-          '(prefers-contrast: more)',
-          '(prefers-contrast: custom)',
-          '(forced-colors: active)',
-        ].some(function (query) {
-          return window.matchMedia(query).matches;
-        });
-        backgroundColor = prefersDarkScheme
-          ? prefersMoreContrast
-            ? '#000000'
-            : '#0d0d0d'
-          : '#ffffff';
+        backgroundColor = prefersDarkScheme ? '#0d0d0d' : '#ffffff';
       }
 
       loadingContainerStyle.innerHTML = `

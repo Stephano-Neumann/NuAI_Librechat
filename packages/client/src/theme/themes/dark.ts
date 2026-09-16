@@ -12,19 +12,19 @@ export const darkTheme: IThemeRGB = {
   'rgb-text-tertiary': '153 150 150', // #999696 (gray-400)
   'rgb-text-muted': '179 182 189', // #b3b6bd (Click UI text.muted)
   'rgb-text-warning': '245 158 11', // #f59e0b (amber-500)
-  'rgb-text-destructive': '248 113 113', // #f87171 (red-400)
+  'rgb-text-destructive': '245 130 140', // #f5828c (NuAI red tint, lightened for AA on dark)
   'rgb-shimmer-base': '255 255 255', // #ffffff, carried at 0.8 alpha
   'rgb-shimmer-dip': '179 179 179', // #b3b3b3
 
-  // Link and accent colors
-  'rgb-link': '96 165 250', // #60a5fa (blue-400)
-  'rgb-link-hover': '147 197 253', // #93c5fd (blue-300)
+  // Link and accent colors — NuAI blue, lightened for AA text contrast on dark surfaces
+  'rgb-link': '89 168 215', // #59a8d7 (NuAI blue, lightened), 7.4:1 on gray-900
+  'rgb-link-hover': '122 185 223', // #7ab9df (NuAI blue, lightened further for hover)
   'rgb-link-visited': '192 132 252', // #c084fc (purple-400)
-  'rgb-accent-primary': '65 167 157', // #41a79d
-  'rgb-accent-primary-hover': '109 200 185', // #6dc8b9
+  'rgb-accent-primary': '89 168 215', // #59a8d7 (NuAI blue, lightened)
+  'rgb-accent-primary-hover': '122 185 223', // #7ab9df (NuAI blue, lightened further for hover)
 
-  // Ring colors (not defined in dark mode, using default)
-  'rgb-ring-primary': '89 89 89', // #595959 (gray-500)
+  // Ring colors
+  'rgb-ring-primary': '0 121 194', // #0079c2 (NuAI blue), 4.18:1 non-text contrast on gray-900
 
   // Header colors
   'rgb-header-primary': '47 47 47', // #2f2f2f (gray-700)
@@ -48,10 +48,10 @@ export const darkTheme: IThemeRGB = {
   'rgb-surface-tertiary-alt': '47 47 47', // #2f2f2f (gray-700)
   'rgb-surface-dialog': '18 18 18', // #121212 (legacy dark dialog)
   'rgb-surface-overlay': '0 0 0', // #000 (black)
-  'rgb-surface-submit': '4 120 87', // #047857 (green-700)
-  'rgb-surface-submit-hover': '6 95 70', // #065f46 (green-800)
-  'rgb-surface-destructive': '153 27 27', // #991b1b (red-800)
-  'rgb-surface-destructive-hover': '127 29 29', // #7f1d1d (red-900)
+  'rgb-surface-submit': '0 121 194', // #0079c2 (NuAI blue), 4.66:1 under white label
+  'rgb-surface-submit-hover': '0 97 155', // #00619b (NuAI blue, darkened for hover)
+  'rgb-surface-destructive': '209 25 40', // #d11928 (NuAI red, darkened for AA under white label)
+  'rgb-surface-destructive-hover': '178 21 34', // #b21522 (NuAI red, darkened further for hover)
   'rgb-surface-chat': '47 47 47', // #2f2f2f (gray-700)
   'rgb-surface-code': '33 33 33', // #212121 (gray-800)
   'rgb-surface-inverted': '255 255 255', // #fff (white)
@@ -67,7 +67,7 @@ export const darkTheme: IThemeRGB = {
   'rgb-border-medium-alt': '66 66 66', // #424242 (gray-600)
   'rgb-border-heavy': '89 89 89', // #595959 (gray-500)
   'rgb-border-xheavy': '153 150 150', // #999696 (gray-400)
-  'rgb-border-destructive': '239 68 68', // #ef4444 (red-500)
+  'rgb-border-destructive': '245 130 140', // #f5828c (NuAI red tint, lightened for visibility on dark)
 
   // Status colors
   'rgb-status-success': '110 231 183', // #6ee7b7 (green-300)
@@ -87,10 +87,10 @@ export const darkTheme: IThemeRGB = {
   'rgb-status-warning-subtle': '69 26 3', // #451a03 (amber-950)
   'rgb-status-warning-border': '146 64 14', // #92400e (amber-800)
   'rgb-status-warning-strong': '146 64 14', // #92400e (amber-800)
-  'rgb-status-error': '252 165 165', // #fca5a5 (red-300)
-  'rgb-status-error-subtle': '69 10 10', // #450a0a (red-950)
-  'rgb-status-error-border': '153 27 27', // #991b1b (red-800)
-  'rgb-status-error-strong': '153 27 27', // #991b1b (red-800)
+  'rgb-status-error': '245 130 140', // #f5828c (NuAI red tint, lightened for AA on dark)
+  'rgb-status-error-subtle': '19 2 4', // #130204 (NuAI red, near-black tint)
+  'rgb-status-error-border': '209 25 40', // #d11928 (NuAI red, darkened)
+  'rgb-status-error-strong': '209 25 40', // #d11928 (NuAI red, darkened for AA under white label)
   'rgb-status-neutral': '205 205 205', // #cdcdcd (gray-300)
   'rgb-status-neutral-subtle': '33 33 33', // #212121 (gray-800)
   'rgb-status-neutral-border': '47 47 47', // #2f2f2f (gray-700)
@@ -106,7 +106,7 @@ export const darkTheme: IThemeRGB = {
   'rgb-text-on-status': '255 255 255', // #fff (white)
 
   // Brand colors
-  'rgb-brand-purple': '171 104 255', // #ab68ff
+  'rgb-brand-purple': '89 168 215', // #59a8d7 (NuAI blue, lightened, repurposed from purple)
 
   /** Code syntax highlighting, measured against the `surface-code` fill. The
    *  comment and meta values are the flattened equivalents of the alpha-blended
