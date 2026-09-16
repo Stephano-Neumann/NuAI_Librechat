@@ -149,15 +149,18 @@ interface:
   fileSearch: true
   # Privacy policy settings
   # DRAFT — pending review by Neumann Steel Legal before this is enabled for users.
-  # externalUrl should point to the reviewed, hosted version once Legal signs off,
-  # so the modal text below and the linked document stay in sync.
+  # externalUrl points at the generic template page shipped in
+  # client/public/assets/legal/privacy-policy.html (public/assets is the one public/
+  # subdirectory the production build copies into client/dist, per copyPublicAssets in
+  # client/vite.config.ts). Swap it for the reviewed, Legal-approved intranet URL once
+  # one exists, so the modal text below and the linked document stay in sync.
   privacyPolicy:
-    externalUrl: 'https://intranet.neumann-steel.example/nuai/privacy-policy' # TODO: replace with the real hosted URL
+    externalUrl: '/assets/legal/privacy-policy.html' # TODO: replace with the Legal-approved hosted URL once available
     openNewTab: true
 
   # Terms of service
   termsOfService:
-    externalUrl: 'https://intranet.neumann-steel.example/nuai/terms' # TODO: replace with the real hosted URL
+    externalUrl: '/assets/legal/terms-of-service.html' # TODO: replace with the Legal-approved hosted URL once available
     openNewTab: true
     modalAcceptance: true
     modalTitle: 'Terms of Use for NuAI'
@@ -873,30 +876,50 @@ endpoints:
   #     #   claude-3.5-haiku:
   #     #     deploymentName: claude-3-5-haiku@20241022  # Override for this model
 
-  # NuAI model library (Ethan's model library) — Phase 1 shares one Azure AI
-  # Foundry-hosted model list with every logged-in user (no per-role/per-department
-  # gating yet; that is Phase 2). `azureOpenAI.groups` is a list of named groups,
-  # each with its own apiKey/instanceName; `models` maps the visible model name to
-  # its Foundry deployment name.
-  # STILL NEEDS: the real Foundry instance name, real deployment names, and a real
-  # AZURE_API_KEY in .env — instanceName/deploymentName below are placeholders, so
-  # this endpoint will show in the UI but fail to actually call a model until those
-  # are filled in.
-  azureOpenAI:
-    groups:
-      - group: 'neumann-model-library'
-        apiKey: '${NUAI_AZURE_FOUNDRY_API_KEY}'
-        instanceName: 'neumannsteel-foundry' # TODO: real Foundry instance name
-        version: '2024-05-01-preview'
-        models:
-          gpt-4o:
-            deploymentName: 'gpt-4o' # TODO: real deployment name
-          claude-sonnet:
-            deploymentName: 'claude-sonnet-deployment-name' # TODO: real deployment name
+  # Ethan's Azure AI Foundry-hosted model library. Kept configured (so the real
+  # instance name, deployment names, and AZURE_API_KEY can be dropped in later)
+  # but DISABLED from the endpoint picker — users now see the branded "NuAI"
+  # endpoint below instead of the generic "Azure OpenAI" one. `groups` is a list
+  # of named groups, each with its own apiKey/instanceName; `models` maps the
+  # visible model name to its Foundry deployment name.
+  # To re-enable this as its own visible endpoint, uncomment the block below.
+  # azureOpenAI:
+  #   groups:
+  #     - group: 'neumann-model-library'
+  #       apiKey: '${NUAI_AZURE_FOUNDRY_API_KEY}'
+  #       instanceName: 'neumannsteel-foundry' # TODO: real Foundry instance name
+  #       version: '2024-05-01-preview'
+  #       models:
+  #         gpt-4o:
+  #           deploymentName: 'gpt-4o' # TODO: real deployment name
+  #         claude-sonnet:
+  #           deploymentName: 'claude-sonnet-deployment-name' # TODO: real deployment name
+
+  # NuAI library — the branded endpoint Neumann Steel users see in the picker,
+  # using the NuAI logo already shipped at client/public/assets/logo.svg.
+  # Phase 1 (current): visible in the UI, but NOT wired to any real model.
+  # apiKey/baseURL/model below are placeholders (see NUAI_LIBRARY_API_KEY /
+  # NUAI_LIBRARY_BASE_URL in .env) — selecting NuAI and sending a message will
+  # fail until Phase 2.
+  # Phase 2: point baseURL/apiKey at Ethan's Azure AI Foundry library above (or
+  # a gateway in front of it), list the real models, and restrict which models
+  # each user/role can see — the per-user model allowlisting is not yet decided
+  # or implemented.
+  custom:
+    - name: 'NuAI'
+      apiKey: '${NUAI_LIBRARY_API_KEY}' # TODO: real key once Phase 2 connects to Ethan's library
+      baseURL: '${NUAI_LIBRARY_BASE_URL}' # TODO: real base URL once Phase 2 connects to Ethan's library
+      iconURL: '/assets/logo.svg'
+      modelDisplayLabel: 'NuAI'
+      models:
+        default:
+          - 'not-yet-connected' # TODO: replace with real models once wired to Ethan's library
+        fetch: false
 
   # All other example provider endpoints below are commented out — Phase 1 only
   # exposes the built-in `anthropic` endpoint (see ENDPOINTS in .env) and the
-  # azureOpenAI model library above.
+  # NuAI library above (not yet connected to any models). Additional real
+  # endpoints get appended to the `custom:` array above, not declared again below.
   # custom:
   #   # Anthropic-compatible Example (native `/v1/messages` API)
   #   # Set `provider: anthropic` to use the native Anthropic client instead of the
